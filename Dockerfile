@@ -22,7 +22,7 @@ RUN mkdir -p /api
 WORKDIR /api
 COPY --from=builder /api/app .
 COPY --from=builder /api/test.db .
-
+ADD static /api/static
 EXPOSE 8080
 
 ENTRYPOINT ["./app"]
