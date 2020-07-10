@@ -21,6 +21,8 @@ func main() {
 
 	r := gin.Default()
 
+	r.LoadHTMLGlob("static/*")
+
 	r.GET("/hello", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
 			"greet": "hello, world!",
@@ -50,6 +52,17 @@ func main() {
 	})
 
 	r.GET("/products", GetProducts)
+	r.GET("/", func(context *gin.Context) {
+		context.HTML(200, "static/index.tmpl", gin.H{
+			"routes": r.Routes(),
+		})
+	})
+
+	r.GET("/routes", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{
+			"routes": r.Routes(),
+		})
+	})
 
 	r.Run() // listen and serve on 0.0.0.0:8080
 }
@@ -72,5 +85,4 @@ func GetProducts(c *gin.Context) {
 		c.JSON(http.StatusOK, products)
 		log.Println(products)
 	}
-
 }

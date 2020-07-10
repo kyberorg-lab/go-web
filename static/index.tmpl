@@ -1,0 +1,20 @@
+{{ define "static/index.tmpl" }}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Go goes Web</title>
+</head>
+<body>
+    What we have here:
+<ul>
+  {{ range .routes }}
+  <li><a href="{{ .Path }}">{{ .Path }}</a> ({{ .Method }})</li>
+  {{ end }}
+</ul>
+
+</body>
+</html>
+
+{{ end }}
