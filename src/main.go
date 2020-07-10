@@ -21,7 +21,9 @@ func main() {
 
 	r := gin.Default()
 
-	r.LoadHTMLGlob("static/*")
+	r.LoadHTMLGlob("templates/*")
+	r.Static("/static", "./assets")
+	r.StaticFile("/favicon.ico", "./assets/favicon.ico")
 
 	r.GET("/hello", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
