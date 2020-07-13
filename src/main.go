@@ -24,12 +24,28 @@ func main() {
 	r.Static("/static", "./assets")
 	r.StaticFile("/favicon.ico", "./assets/favicon.ico")
 
+	//index
+	r.GET("/", func(context *gin.Context) {
+		context.HTML(200, "static/index.tmpl", gin.H{
+			"routes": r.Routes(),
+		})
+	})
+
+	//routes as JSON
+	r.GET("/routes", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{
+			"routes": r.Routes(),
+		})
+	})
+	
+	//hello
 	r.GET("/hello", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
 			"greet": "hello, world!",
 		})
 	})
 
+	//echo
 	r.GET("/echo/:echo", func(c *gin.Context) {
 		echo := c.Param("echo")
 		c.JSON(http.StatusOK, gin.H{
@@ -37,6 +53,7 @@ func main() {
 		})
 	})
 
+	//fake upload
 	r.POST("/upload", func(c *gin.Context) {
 		form, _ := c.MultipartForm()
 		files := form.File["upload[]"]
@@ -51,21 +68,12 @@ func main() {
 			"uploaded": len(files),
 		})
 	})
-
+	
+        //REST
 	r.GET("/products", GetProducts)
-	r.POST("/product", AddProduct)
-	r.GET("/", func(context *gin.Context) {
-		context.HTML(200, "static/index.tmpl", gin.H{
-			"routes": r.Routes(),
-		})
-	})
-
-	r.GET("/routes", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{
-			"routes": r.Routes(),
-		})
-	})
-
+	r.POST("/products", AddProduct)
+	
+	//go-go-go
 	r.Run() // listen and serve on 0.0.0.0:8080
 }
 
