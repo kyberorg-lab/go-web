@@ -20,6 +20,7 @@ type Product struct {
 var db *gorm.DB
 
 func main() {
+	initDb()
 
 	r := gin.Default()
 
@@ -80,7 +81,7 @@ func main() {
 	r.Run() // listen and serve on 0.0.0.0:8080
 }
 
-func InitDb() {
+func initDb() {
 	database, err := gorm.Open("sqlite3", "test.db")
 	if err != nil {
 		panic("failed to connect database")
