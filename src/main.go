@@ -16,6 +16,9 @@ type Product struct {
 	Price uint   `json:”price”`
 }
 
+//DB var
+var db *gorm.DB
+
 func main() {
 
 	r := gin.Default()
@@ -77,15 +80,22 @@ func main() {
 	r.Run() // listen and serve on 0.0.0.0:8080
 }
 
-func GetProducts(c *gin.Context) {
-
-	db, err := gorm.Open("sqlite3", "test.db")
+func InitDb() {
+	database, err := gorm.Open("sqlite3", "test.db")
 	if err != nil {
 		panic("failed to connect database")
 	}
-	defer db.Close()
-	db.AutoMigrate(&Product{})
+	db = database
 
+	defer database.Close()
+	database.AutoMigrate(&Product{})
+}
+
+func GetProducts(c *gin.Context) {
+	if db == nil {
+		c.AbortWithStatus(http.StatusInternalServerError)
+		log.Println("Failed to connect to DB")
+	}
 	var products []Product
 
 	if err := db.Find(&products).Error; err != nil {
@@ -98,14 +108,13 @@ func GetProducts(c *gin.Context) {
 }
 
 func AddProduct(c *gin.Context) {
-	db, err := gorm.Open("sqlite3", "test.db")
-	if err != nil {
-		panic("failed to connect database")
+	if db == nil {
+		c.AbortWithStatus(http.StatusInternalServerError)
+		log.Println("Failed to connect to DB")
 	}
-	defer db.Close()
 
 	product := Product{}
-	err = c.BindJSON(&product)
+	err := c.BindJSON(&product)
 
 	if err != nil {
 		exception := err.Error()
