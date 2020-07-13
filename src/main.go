@@ -37,7 +37,7 @@ func main() {
 			"routes": r.Routes(),
 		})
 	})
-	
+
 	//hello
 	r.GET("/hello", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
@@ -68,11 +68,11 @@ func main() {
 			"uploaded": len(files),
 		})
 	})
-	
-        //REST
+
+	//REST
 	r.GET("/products", GetProducts)
 	r.POST("/products", AddProduct)
-	
+
 	//go-go-go
 	r.Run() // listen and serve on 0.0.0.0:8080
 }
@@ -115,7 +115,7 @@ func AddProduct(c *gin.Context) {
 			"data":      product,
 		})
 	} else {
-		status := db.Create(product)
+		status := db.Create(&product)
 		if status.Error == nil && status.RowsAffected > 0 {
 			c.JSON(201, gin.H{
 				"data": product,
