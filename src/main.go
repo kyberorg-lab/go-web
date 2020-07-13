@@ -108,6 +108,7 @@ func AddProduct(c *gin.Context) {
 		})
 	} else {
 		status := db.Create(product)
+		log.Println("DB Create status", status)
 		if status.Error != nil && status.RowsAffected > 0 {
 			c.JSON(201, gin.H{
 				"data": product,
