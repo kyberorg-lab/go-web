@@ -1,10 +1,9 @@
 package main
 
 import (
+	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
-
-	"github.com/gin-gonic/gin"
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
@@ -54,6 +53,7 @@ func main() {
 	})
 
 	r.GET("/products", GetProducts)
+	r.POST("/product", AddProduct)
 	r.GET("/", func(context *gin.Context) {
 		context.HTML(200, "static/index.tmpl", gin.H{
 			"routes": r.Routes(),
@@ -86,5 +86,37 @@ func GetProducts(c *gin.Context) {
 	} else {
 		c.JSON(http.StatusOK, products)
 		log.Println(products)
+	}
+}
+
+func AddProduct(c *gin.Context) {
+	db, err := gorm.Open("sqlite3", "test.db")
+	if err != nil {
+		panic("failed to connect database")
+	}
+	defer db.Close()
+
+	product := Product{}
+	err = c.BindJSON(&product)
+
+	if err != nil {
+		exception := err.Error()
+		log.Println(err)
+		c.JSON(400, gin.H{
+			"exception": exception,
+			"data":      product,
+		})
+	} else {
+		status := db.Create(product)
+		if status.Error != nil && status.RowsAffected > 0 {
+			c.JSON(201, gin.H{
+				"data": product,
+			})
+		} else {
+			c.AbortWithStatusJSON(500, gin.H{
+				"exception": status.Error,
+				"data":      product,
+			})
+		}
 	}
 }
