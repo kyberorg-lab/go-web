@@ -11,7 +11,7 @@ import (
 
 // Product type
 type Product struct {
-	ID    uint   `json:”id”`
+	gorm.Model
 	Code  string `json:”code”`
 	Price uint   `json:”price”`
 }
@@ -108,8 +108,7 @@ func AddProduct(c *gin.Context) {
 		})
 	} else {
 		status := db.Create(product)
-		log.Println("DB Create status", status)
-		if status.Error != nil && status.RowsAffected > 0 {
+		if status.Error == nil && status.RowsAffected > 0 {
 			c.JSON(201, gin.H{
 				"data": product,
 			})
