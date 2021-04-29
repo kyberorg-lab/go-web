@@ -57,6 +57,15 @@ func main() {
 		})
 	})
 
+	//foo-bar example (https://github.com/openshift/openshift-docs/pull/22021/files)
+	r.GET("/baz/:bar", func(c *gin.Context) {
+		bar := c.Param("bar")
+		c.JSON(http.StatusOK, gin.H{
+			"bar":  bar,
+			"self": c.Request.RequestURI,
+		})
+	})
+
 	//fake API
 	r.GET("/api/v1/:id", func(c *gin.Context) {
 		id := c.Param("id")
