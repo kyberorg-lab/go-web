@@ -57,6 +57,15 @@ func main() {
 		})
 	})
 
+	//fake API
+	r.GET("/api/v1/:id", func(c *gin.Context) {
+		id := c.Param("id")
+		c.JSON(http.StatusOK, gin.H{
+			"id":   id,
+			"self": c.Request.RequestURI,
+		})
+	})
+
 	//fake upload
 	r.POST("/upload", func(c *gin.Context) {
 		form, _ := c.MultipartForm()
